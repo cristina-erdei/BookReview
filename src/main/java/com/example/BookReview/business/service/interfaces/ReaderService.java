@@ -2,6 +2,7 @@ package com.example.BookReview.business.service.interfaces;
 
 import com.example.BookReview.business.model.base.Reader;
 import com.example.BookReview.business.model.create.ReaderCreateModel;
+import com.example.BookReview.data.model.AdministratorDB;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +12,8 @@ public interface ReaderService {
     List<Reader> findAll();
 
     Reader findById(Long id);
+
+    Reader findAllByAuthenticationToken(String authenticationToken);
 
     Reader findByAuthenticationToken(String authenticationToken);
 
