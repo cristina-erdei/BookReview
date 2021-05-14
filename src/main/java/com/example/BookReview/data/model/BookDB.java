@@ -18,7 +18,6 @@ public class BookDB {
     private LocalDate publicationDate;
     private int totalNumberOfRatings;
     private double meanRating;
-    //TODO: decide if observer for total number of reviews as well
     private BookGenre genre;
     private Language language;
     private String description;

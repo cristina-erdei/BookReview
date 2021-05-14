@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookSellerRepository extends JpaRepository<BookSellerDB, Long> {
     BookSellerDB findByAuthenticationToken(String authenticationToken);
+    BookSellerDB findByEmail(String email);
 }

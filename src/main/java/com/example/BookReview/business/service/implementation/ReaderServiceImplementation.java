@@ -42,6 +42,11 @@ public class ReaderServiceImplementation implements ReaderService {
     }
 
     @Override
+    public Reader findByEmail(String email) {
+        return new Reader(readerRepository.findByEmail(email));
+    }
+
+    @Override
     public Reader create(ReaderCreateModel createModel) {
         Base64.Encoder encoder = Base64.getEncoder();
         String encodedPass = encoder.encodeToString(createModel.getPassword().getBytes(StandardCharsets.UTF_8));

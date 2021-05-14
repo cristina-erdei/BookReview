@@ -5,6 +5,7 @@ import com.example.BookReview.business.model.base.BookSeller;
 import com.example.BookReview.business.model.create.BookCreateModel;
 import com.example.BookReview.business.model.create.BookSellerCreateModel;
 import com.example.BookReview.data.model.AdministratorDB;
+import com.example.BookReview.data.model.BookSellerDB;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface BookSellerService {
     BookSeller findById(Long id);
 
     BookSeller findByAuthenticationToken(String authenticationToken);
+
+    BookSeller findByEmail(String email);
 
     BookSeller create(BookSellerCreateModel createModel);
 

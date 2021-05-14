@@ -40,6 +40,11 @@ public class BookSellerServiceImplementation implements BookSellerService {
     }
 
     @Override
+    public BookSeller findByEmail(String email) {
+        return new BookSeller(bookSellerRepository.findByEmail(email));
+    }
+
+    @Override
     public BookSeller create(BookSellerCreateModel createModel) {
         Base64.Encoder encoder = Base64.getEncoder();
         String encodedPass = encoder.encodeToString(createModel.getPassword().getBytes(StandardCharsets.UTF_8));

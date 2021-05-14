@@ -41,6 +41,11 @@ public class AdministratorServiceImplementation implements AdministratorService 
     }
 
     @Override
+    public Administrator findByEmail(String email) {
+        return new Administrator(administratorRepository.findByEmail(email));
+    }
+
+    @Override
     public Administrator create(AdministratorCreateModel createModel) {
         Base64.Encoder encoder = Base64.getEncoder();
         String encodedPass = encoder.encodeToString(createModel.getPassword().getBytes(StandardCharsets.UTF_8));
