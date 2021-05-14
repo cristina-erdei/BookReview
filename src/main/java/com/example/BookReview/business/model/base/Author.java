@@ -1,5 +1,7 @@
 package com.example.BookReview.business.model.base;
 
+import com.example.BookReview.data.model.AuthorDB;
+
 import java.time.LocalDate;
 
 public class Author {
@@ -16,6 +18,13 @@ public class Author {
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
+    }
+
+    public Author(AuthorDB authorDB) {
+        this.id = authorDB.getId();
+        this.fullName = authorDB.getFullName();
+        this.dateOfBirth = authorDB.getDateOfBirth();
+        this.dateOfDeath = authorDB.getDateOfDeath();
     }
 
     public void setId(Long id) {

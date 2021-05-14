@@ -12,10 +12,6 @@ public class BookCreateModel {
     private int year;
     private int month;
     private int day;
-
-    private int totalNumberOfRatings;
-    private double meanRating;
-    //TODO: decide if observer for total number of reviews as well
     private BookGenre genre;
     private Language language;
     private String description;
@@ -26,13 +22,11 @@ public class BookCreateModel {
     public BookCreateModel() {
     }
 
-    public BookCreateModel(String title, int year, int month, int day, int totalNumberOfRatings, double meanRating, BookGenre genre, Language language, String description, List<Long> authors) {
+    public BookCreateModel(String title, int year, int month, int day, BookGenre genre, Language language, String description, List<Long> authors) {
         this.title = title;
         this.year = year;
         this.month = month;
         this.day = day;
-        this.totalNumberOfRatings = totalNumberOfRatings;
-        this.meanRating = meanRating;
         this.genre = genre;
         this.language = language;
         this.description = description;
@@ -71,23 +65,7 @@ public class BookCreateModel {
         this.day = day;
     }
 
-    public int getTotalNumberOfRatings() {
-        return totalNumberOfRatings;
-    }
-
-    public void setTotalNumberOfRatings(int totalNumberOfRatings) {
-        this.totalNumberOfRatings = totalNumberOfRatings;
-    }
-
-    public double getMeanRating() {
-        return meanRating;
-    }
-
-    public void setMeanRating(double meanRating) {
-        this.meanRating = meanRating;
-    }
-
-    public BookGenre getGenre() {
+     public BookGenre getGenre() {
         return genre;
     }
 

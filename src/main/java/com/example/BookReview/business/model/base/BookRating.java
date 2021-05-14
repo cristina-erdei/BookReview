@@ -1,5 +1,7 @@
 package com.example.BookReview.business.model.base;
 
+import com.example.BookReview.data.model.BookRatingDB;
+
 public class BookRating {
     private Long id;
 
@@ -15,6 +17,14 @@ public class BookRating {
         this.rating = rating;
         this.book = book;
         this.reader = reader;
+    }
+
+    public BookRating(BookRatingDB bookRatingDB) {
+        this.id = bookRatingDB.getId();
+        this.rating = bookRatingDB.getRating();
+        this.book = new Book(bookRatingDB.getBook());
+        this.reader = new Reader(bookRatingDB.getReader());
+
     }
 
     public void setId(Long id) {

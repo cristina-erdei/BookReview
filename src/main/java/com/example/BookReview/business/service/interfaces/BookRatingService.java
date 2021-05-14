@@ -19,10 +19,6 @@ public interface BookRatingService {
 
     List<BookRating> findAllByReader_Id(Long reader_id);
 
-    List<BookRating> findAllByBook_Id(Long book_id);
-
-    List<BookRating> findAllByReader_Id(Long reader_id);
-
     BookRating create(BookRatingCreateModel createModel);
 
     BookRating update(Long id, BookRatingCreateModel newValue);

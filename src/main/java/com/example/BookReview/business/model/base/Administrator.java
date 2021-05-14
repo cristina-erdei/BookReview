@@ -1,5 +1,7 @@
 package com.example.BookReview.business.model.base;
 
+import com.example.BookReview.data.model.AdministratorDB;
+
 public class Administrator extends User {
     private String name;
 
@@ -9,6 +11,11 @@ public class Administrator extends User {
     public Administrator(String password, String email, String name) {
         super(password, email);
         this.name = name;
+    }
+
+    public Administrator(AdministratorDB administratorDB) {
+        super(administratorDB.getId(), administratorDB.getPassword(), administratorDB.getEmail());
+        this.name = administratorDB.getName();
     }
 
     public String getName() {

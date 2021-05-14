@@ -1,5 +1,7 @@
 package com.example.BookReview.data.model;
 
+import com.example.BookReview.business.model.base.Author;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,6 +22,13 @@ public class AuthorDB {
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
+    }
+
+    public AuthorDB(Author author) {
+        this.id = author.getId();
+        this.fullName = author.getFullName();
+        this.dateOfBirth = author.getDateOfBirth();
+        this.dateOfDeath = author.getDateOfDeath();
     }
 
     public void setId(Long id) {

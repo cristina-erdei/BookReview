@@ -1,10 +1,12 @@
 package com.example.BookReview.business.model.base;
 
+import com.example.BookReview.data.model.BookDB;
 import com.example.BookReview.helper.BookGenre;
 import com.example.BookReview.helper.Language;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Book {
     private Long id;
@@ -33,6 +35,18 @@ public class Book {
         this.language = language;
         this.description = description;
         this.authors = authors;
+    }
+
+    public Book(BookDB bookDB) {
+        this.id = bookDB.getId();
+        this.title = bookDB.getTitle();
+        this.publicationDate = bookDB.getPublicationDate();
+        this.totalNumberOfRatings = bookDB.getTotalNumberOfRatings();
+        this.meanRating = bookDB.getMeanRating();
+        this.genre = bookDB.getGenre();
+        this.language = bookDB.getLanguage();
+        this.description = bookDB.getDescription();
+        this.authors = bookDB.getAuthors().stream().map(Author::new).collect(Collectors.toList());
     }
 
     public void setId(Long id) {

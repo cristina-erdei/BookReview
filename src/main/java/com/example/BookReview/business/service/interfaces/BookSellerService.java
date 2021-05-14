@@ -15,8 +15,6 @@ public interface BookSellerService {
 
     BookSeller findById(Long id);
 
-    BookSeller findAllByAuthenticationToken(String authenticationToken);
-
     BookSeller findByAuthenticationToken(String authenticationToken);
 
     BookSeller create(BookSellerCreateModel createModel);

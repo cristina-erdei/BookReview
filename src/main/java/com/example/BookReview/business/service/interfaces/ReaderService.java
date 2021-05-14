@@ -13,8 +13,6 @@ public interface ReaderService {
 
     Reader findById(Long id);
 
-    Reader findAllByAuthenticationToken(String authenticationToken);
-
     Reader findByAuthenticationToken(String authenticationToken);
 
     Reader create(ReaderCreateModel createModel);

@@ -14,8 +14,6 @@ public interface AdministratorService {
 
     Administrator findById(Long id);
 
-    Administrator findAllByAuthenticationToken(String authenticationToken);
-
     Administrator findByAuthenticationToken(String authenticationToken);
 
     Administrator create(AdministratorCreateModel createModel);
