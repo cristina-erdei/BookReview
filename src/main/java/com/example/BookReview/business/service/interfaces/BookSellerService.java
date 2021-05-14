@@ -24,6 +24,8 @@ public interface BookSellerService {
 
     BookSeller update(Long id, BookSellerCreateModel newValue);
 
+    boolean updateAuthenticationToken(Long id, String token);
+
     BookSeller deleteById(Long id);
 
 }

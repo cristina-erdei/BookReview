@@ -23,6 +23,8 @@ public interface AdministratorService {
 
     Administrator update(Long id, AdministratorCreateModel newValue);
 
+    boolean updateAuthenticationToken(Long id, String token);
+
     Administrator deleteById(Long id);
 
 }

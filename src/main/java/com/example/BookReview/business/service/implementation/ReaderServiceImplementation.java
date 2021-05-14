@@ -5,6 +5,7 @@ import com.example.BookReview.business.model.base.Reader;
 import com.example.BookReview.business.model.create.ReaderCreateModel;
 import com.example.BookReview.business.model.create.ReaderCreateModel;
 import com.example.BookReview.business.service.interfaces.ReaderService;
+import com.example.BookReview.data.model.AdministratorDB;
 import com.example.BookReview.data.model.ReaderDB;
 import com.example.BookReview.data.repository.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,21 @@ public class ReaderServiceImplementation implements ReaderService {
 
         ReaderDB updated = readerRepository.save(toUpdate);
         return new Reader(updated);
+    }
+
+    @Override
+    public boolean updateAuthenticationToken(Long id, String token) {
+        Optional<ReaderDB> readerDB = readerRepository.findById(id);
+        if(readerDB.isEmpty()){
+            return false;
+        }
+
+        ReaderDB toUpdate = readerDB.get();
+        toUpdate.setAuthenticationToken(token);
+
+        readerRepository.save(toUpdate);
+
+        return true;
     }
 
     @Override

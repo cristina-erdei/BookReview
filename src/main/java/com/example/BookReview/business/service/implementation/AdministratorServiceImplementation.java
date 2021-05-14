@@ -92,6 +92,21 @@ public class AdministratorServiceImplementation implements AdministratorService 
     }
 
     @Override
+    public boolean updateAuthenticationToken(Long id, String token) {
+        Optional<AdministratorDB> administratorDB = administratorRepository.findById(id);
+        if(administratorDB.isEmpty()){
+            return false;
+        }
+
+        AdministratorDB toUpdate = administratorDB.get();
+        toUpdate.setAuthenticationToken(token);
+
+        administratorRepository.save(toUpdate);
+
+        return true;
+    }
+
+    @Override
     public Administrator deleteById(Long id) {
         Optional<AdministratorDB> administratorDB = administratorRepository.findById(id);
         if(administratorDB.isEmpty()){

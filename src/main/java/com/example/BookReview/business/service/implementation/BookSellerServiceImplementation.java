@@ -3,6 +3,7 @@ package com.example.BookReview.business.service.implementation;
 import com.example.BookReview.business.model.base.BookSeller;
 import com.example.BookReview.business.model.create.BookSellerCreateModel;
 import com.example.BookReview.business.service.interfaces.BookSellerService;
+import com.example.BookReview.data.model.AdministratorDB;
 import com.example.BookReview.data.model.BookSellerDB;
 import com.example.BookReview.data.repository.BookSellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,21 @@ public class BookSellerServiceImplementation implements BookSellerService {
 
         BookSellerDB updated = bookSellerRepository.save(toUpdate);
         return new BookSeller(updated);
+    }
+
+    @Override
+    public boolean updateAuthenticationToken(Long id, String token) {
+        Optional<BookSellerDB> bookSellerDB = bookSellerRepository.findById(id);
+        if(bookSellerDB.isEmpty()){
+            return false;
+        }
+
+        BookSellerDB toUpdate = bookSellerDB.get();
+        toUpdate.setAuthenticationToken(token);
+
+        bookSellerRepository.save(toUpdate);
+
+        return true;
     }
 
     @Override

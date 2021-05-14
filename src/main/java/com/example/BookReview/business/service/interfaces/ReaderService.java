@@ -22,6 +22,8 @@ public interface ReaderService {
 
     Reader update(Long id, ReaderCreateModel newValue);
 
+    boolean updateAuthenticationToken(Long id, String token);
+
     Reader deleteById(Long id);
 
 }
