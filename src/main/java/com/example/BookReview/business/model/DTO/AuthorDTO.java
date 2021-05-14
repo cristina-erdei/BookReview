@@ -1,5 +1,7 @@
 package com.example.BookReview.business.model.DTO;
 
+import com.example.BookReview.business.model.base.Author;
+
 import java.time.LocalDate;
 
 public class AuthorDTO {
@@ -16,6 +18,13 @@ public class AuthorDTO {
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
+    }
+
+    public AuthorDTO(Author author) {
+        this.id = author.getId();
+        this.fullName = author.getFullName();
+        this.dateOfBirth = author.getDateOfBirth();
+        this.dateOfDeath = author.getDateOfDeath();
     }
 
     public void setId(Long id) {

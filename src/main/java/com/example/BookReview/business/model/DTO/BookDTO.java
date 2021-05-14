@@ -1,10 +1,12 @@
 package com.example.BookReview.business.model.DTO;
 
+import com.example.BookReview.business.model.base.Book;
 import com.example.BookReview.helper.BookGenre;
 import com.example.BookReview.helper.Language;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BookDTO {
     private Long id;
@@ -13,7 +15,7 @@ public class BookDTO {
     private LocalDate publicationDate;
     private int totalNumberOfRatings;
     private double meanRating;
-   private BookGenre genre;
+    private BookGenre genre;
     private Language language;
     private String description;
 
@@ -32,6 +34,18 @@ public class BookDTO {
         this.language = language;
         this.description = description;
         this.authors = authors;
+    }
+
+    public BookDTO(Book book) {
+        this.id = book.getId();
+        this.title = book.getTitle();
+        this.publicationDate = book.getPublicationDate();
+        this.totalNumberOfRatings = book.getTotalNumberOfRatings();
+        this.meanRating = book.getMeanRating();
+        this.genre = book.getGenre();
+        this.language = book.getLanguage();
+        this.description = book.getDescription();
+        this.authors = book.getAuthors().stream().map(AuthorDTO::new).collect(Collectors.toList());
     }
 
     public void setId(Long id) {
