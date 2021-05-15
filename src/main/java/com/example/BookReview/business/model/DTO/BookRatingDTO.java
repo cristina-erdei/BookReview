@@ -1,5 +1,7 @@
 package com.example.BookReview.business.model.DTO;
 
+import com.example.BookReview.business.model.base.BookRating;
+
 public class BookRatingDTO {
     private Long id;
 
@@ -15,6 +17,13 @@ public class BookRatingDTO {
         this.rating = rating;
         this.book = book;
         this.reader = reader;
+    }
+
+    public BookRatingDTO(BookRating bookRating) {
+        this.id = bookRating.getId();
+        this.rating = bookRating.getRating();
+        this.book = new BookDTO(bookRating.getBook());
+        this.reader = new ReaderDTO(bookRating.getReader());
     }
 
     public void setId(Long id) {

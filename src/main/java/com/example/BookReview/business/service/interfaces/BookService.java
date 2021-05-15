@@ -14,8 +14,6 @@ public interface BookService {
 
     Book findById(Long id);
 
-    List<Book> findAllByAuthors(List<Author> authors);
-
     List<Book> findAllByGenre(BookGenre genre);
 
     List<Book> findAllByLanguage(Language language);
@@ -24,7 +22,7 @@ public interface BookService {
 
     Book update(Long id, BookCreateModel newValue);
 
-    Book deleteById(Long id);
+    boolean deleteById(Long id);
 
 }
 

@@ -43,12 +43,6 @@ public class BookServiceImplementation implements BookService {
     }
 
     @Override
-    public List<Book> findAllByAuthors(List<Author> authors) {
-        List<AuthorDB> authorDBS = authors.stream().map(AuthorDB::new).collect(Collectors.toList());
-        return bookRepository.findAllByAuthors(authorDBS).stream().map(Book::new).collect(Collectors.toList());
-    }
-
-    @Override
     public List<Book> findAllByGenre(BookGenre genre) {
         return bookRepository.findAllByGenre(genre).stream().map(Book::new).collect(Collectors.toList());
     }
@@ -133,16 +127,14 @@ public class BookServiceImplementation implements BookService {
     }
 
     @Override
-    public Book deleteById(Long id) {
+    public boolean deleteById(Long id) {
         Optional<BookDB> bookDB = bookRepository.findById(id);
         if(bookDB.isEmpty()){
-            return null;
+            return false;
         }
 
-        BookDB toDelete = bookDB.get();
-
         bookRepository.deleteById(id);
-        return new Book(toDelete);
+        return true;
     }
 
     //TODO create method to update rating - observer

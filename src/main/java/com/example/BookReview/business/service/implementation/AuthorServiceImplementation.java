@@ -33,18 +33,33 @@ public class AuthorServiceImplementation implements AuthorService {
         Optional<AuthorDB> authorDB = authorRepository.findById(id);
         return authorDB.map(Author::new).orElse(null);
     }
+
     @Override
     public Author create(AuthorCreateModel createModel) {
-        LocalDate dateOfBirth = LocalDate.of(
+        LocalDate dateOfBirth;
+
+        if (createModel.getBirthYear() == 0) {
+            return null;
+        }
+
+        dateOfBirth = LocalDate.of(
                 createModel.getBirthYear(),
                 createModel.getBirthMonth(),
                 createModel.getBirthDay()
         );
-        LocalDate dateOfDeath = LocalDate.of(
-                createModel.getDeathYear(),
-                createModel.getDeathMonth(),
-                createModel.getDeathDay()
-        );
+
+
+        LocalDate dateOfDeath;
+
+        if (createModel.getDeathYear() == 0) {
+            dateOfDeath = null;
+        } else {
+            dateOfDeath = LocalDate.of(
+                    createModel.getDeathYear(),
+                    createModel.getDeathMonth(),
+                    createModel.getDeathDay()
+            );
+        }
 
         AuthorDB authorDB = new AuthorDB(
                 createModel.getFullName(),
@@ -60,7 +75,7 @@ public class AuthorServiceImplementation implements AuthorService {
     @Override
     public Author update(Long id, AuthorCreateModel newValue) {
         Optional<AuthorDB> authorDB = authorRepository.findById(id);
-        if(authorDB.isEmpty()){
+        if (authorDB.isEmpty()) {
             return null;
         }
 
@@ -75,13 +90,24 @@ public class AuthorServiceImplementation implements AuthorService {
 
 
         LocalDate oldDeathDate = toUpdate.getDateOfDeath();
-        year = newValue.getDeathYear() > 0 ? newValue.getDeathYear() : oldDeathDate.getYear();
-        month = newValue.getDeathMonth() > 0 ? newValue.getDeathMonth() : oldDeathDate.getMonthValue();
-        day = newValue.getDeathDay() > 0 ? newValue.getDeathDay() : oldDeathDate.getDayOfMonth();
-        LocalDate newDeathDate = LocalDate.of(year, month, day);
+        LocalDate newDeathDate;
+        if (oldDeathDate == null) {
+            if (newValue.getDeathYear() == 0) {
+                newDeathDate = null;
+            } else if (newValue.getDeathDay() == 0 || newValue.getDeathMonth() == 0) {
+                return null;
+            } else {
+                newDeathDate = LocalDate.of(newValue.getDeathYear(), newValue.getDeathMonth(), newValue.getDeathDay());
+            }
+        } else {
+            year = newValue.getDeathYear() > 0 ? newValue.getDeathYear() : oldDeathDate.getYear();
+            month = newValue.getDeathMonth() > 0 ? newValue.getDeathMonth() : oldDeathDate.getMonthValue();
+            day = newValue.getDeathDay() > 0 ? newValue.getDeathDay() : oldDeathDate.getDayOfMonth();
+            newDeathDate = LocalDate.of(year, month, day);
+        }
         toUpdate.setDateOfDeath(newDeathDate);
 
-        if(newValue.getFullName() != null){
+        if (newValue.getFullName() != null) {
             toUpdate.setFullName(newValue.getFullName());
         }
 
@@ -93,7 +119,7 @@ public class AuthorServiceImplementation implements AuthorService {
     @Override
     public Author deleteById(Long id) {
         Optional<AuthorDB> authorDB = authorRepository.findById(id);
-        if(authorDB.isEmpty()){
+        if (authorDB.isEmpty()) {
             return null;
         }
 

@@ -37,12 +37,20 @@ public class BookSellerServiceImplementation implements BookSellerService {
 
     @Override
     public BookSeller findByAuthenticationToken(String authenticationToken) {
-        return new BookSeller(bookSellerRepository.findByAuthenticationToken(authenticationToken));
+        BookSellerDB bookSellerDB = bookSellerRepository.findByAuthenticationToken(authenticationToken);
+        if(bookSellerDB == null) {
+            return null;
+        }
+        return new BookSeller(bookSellerDB);
     }
 
     @Override
     public BookSeller findByEmail(String email) {
-        return new BookSeller(bookSellerRepository.findByEmail(email));
+        BookSellerDB bookSellerDB = bookSellerRepository.findByEmail(email);
+        if(bookSellerDB == null) {
+            return null;
+        }
+        return new BookSeller(bookSellerDB);
     }
 
     @Override

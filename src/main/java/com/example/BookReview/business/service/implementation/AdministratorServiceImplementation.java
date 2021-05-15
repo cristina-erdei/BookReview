@@ -37,12 +37,19 @@ public class AdministratorServiceImplementation implements AdministratorService 
 
     @Override
     public Administrator findByAuthenticationToken(String authenticationToken) {
-        return new Administrator(administratorRepository.findByAuthenticationToken(authenticationToken));
-    }
+        AdministratorDB administratorDB =administratorRepository.findByAuthenticationToken(authenticationToken);
+        if(administratorDB == null){
+            return null;
+        }
+        return new Administrator(administratorDB);}
 
     @Override
     public Administrator findByEmail(String email) {
-        return new Administrator(administratorRepository.findByEmail(email));
+        AdministratorDB administratorDB =administratorRepository.findByEmail(email);
+        if(administratorDB == null){
+            return null;
+        }
+        return new Administrator(administratorDB);
     }
 
     @Override

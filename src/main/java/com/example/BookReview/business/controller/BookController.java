@@ -7,6 +7,7 @@ import com.example.BookReview.business.model.base.Author;
 import com.example.BookReview.business.model.base.Book;
 import com.example.BookReview.business.model.base.BookRating;
 import com.example.BookReview.business.model.create.BookCreateModel;
+import com.example.BookReview.business.service.implementation.BookServiceImplementation;
 import com.example.BookReview.business.service.interfaces.*;
 import com.example.BookReview.helper.BookGenre;
 import com.example.BookReview.helper.Language;
@@ -25,9 +26,8 @@ import java.util.stream.Collectors;
 public class BookController {
 
 
-    @Qualifier("bookService")
     @Autowired
-    private BookService bookService;
+    private BookServiceImplementation bookService;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<BookDTO>> findAll() {
@@ -47,16 +47,6 @@ public class BookController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(new BookDTO(book), HttpStatus.OK);
-    }
-
-    @PostMapping("/getByAuthors")
-    public ResponseEntity<List<BookDTO>> findAllByAuthors(@RequestBody List<Author> authors) {
-        List<Book> books = bookService.findAllByAuthors(authors);
-
-        if (books == null) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(books.stream().map(BookDTO::new).collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping("/getByGenre/{genre}")
@@ -97,13 +87,13 @@ public class BookController {
     }
 
     @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<BookDTO> deleteById(@PathVariable Long id) {
-        Book book = bookService.deleteById(id);
+    public ResponseEntity deleteById(@PathVariable Long id) {
+        boolean success = bookService.deleteById(id);
 
-        if (book == null) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        if (!success) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(new BookDTO(book), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

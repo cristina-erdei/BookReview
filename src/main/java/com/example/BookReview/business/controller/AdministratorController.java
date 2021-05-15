@@ -3,6 +3,7 @@ package com.example.BookReview.business.controller;
 import com.example.BookReview.business.model.DTO.AdministratorDTO;
 import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.create.AdministratorCreateModel;
+import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.interfaces.AdministratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,10 +19,8 @@ import java.util.stream.Collectors;
 public class AdministratorController {
 
 
-    @Qualifier("administratorService")
     @Autowired
-    private AdministratorService administratorService;
-
+    private AdministratorServiceImplementation administratorService;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<AdministratorDTO>> findAll() {

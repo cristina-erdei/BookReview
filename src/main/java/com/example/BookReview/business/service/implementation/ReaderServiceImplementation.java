@@ -1,11 +1,13 @@
 package com.example.BookReview.business.service.implementation;
 
+import com.example.BookReview.business.model.base.BookSeller;
 import com.example.BookReview.business.model.base.Reader;
 import com.example.BookReview.business.model.base.Reader;
 import com.example.BookReview.business.model.create.ReaderCreateModel;
 import com.example.BookReview.business.model.create.ReaderCreateModel;
 import com.example.BookReview.business.service.interfaces.ReaderService;
 import com.example.BookReview.data.model.AdministratorDB;
+import com.example.BookReview.data.model.BookSellerDB;
 import com.example.BookReview.data.model.ReaderDB;
 import com.example.BookReview.data.repository.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +41,20 @@ public class ReaderServiceImplementation implements ReaderService {
 
     @Override
     public Reader findByAuthenticationToken(String authenticationToken) {
-        return new Reader(readerRepository.findByAuthenticationToken(authenticationToken));
+        ReaderDB readerDB = readerRepository.findByAuthenticationToken(authenticationToken);
+        if(readerDB == null) {
+            return null;
+        }
+        return new Reader(readerDB);
     }
 
     @Override
     public Reader findByEmail(String email) {
-        return new Reader(readerRepository.findByEmail(email));
+        ReaderDB readerDB = readerRepository.findByEmail(email);
+        if(readerDB == null) {
+            return null;
+        }
+        return new Reader(readerDB);
     }
 
     @Override

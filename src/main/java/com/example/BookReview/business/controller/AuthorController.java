@@ -5,6 +5,7 @@ import com.example.BookReview.business.model.DTO.AuthorDTO;
 import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.Author;
 import com.example.BookReview.business.model.create.AuthorCreateModel;
+import com.example.BookReview.business.service.implementation.AuthorServiceImplementation;
 import com.example.BookReview.business.service.interfaces.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,9 +21,8 @@ import java.util.stream.Collectors;
 public class AuthorController {
 
 
-    @Qualifier("authorService")
     @Autowired
-    private AuthorService authorService;
+    private AuthorServiceImplementation authorService;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<AuthorDTO>> findAll() {
