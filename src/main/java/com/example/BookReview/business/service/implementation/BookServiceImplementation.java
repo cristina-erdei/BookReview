@@ -2,11 +2,15 @@ package com.example.BookReview.business.service.implementation;
 
 import com.example.BookReview.business.model.base.*;
 import com.example.BookReview.business.model.create.*;
+import com.example.BookReview.business.model.observer.CustomObserver;
 import com.example.BookReview.business.service.interfaces.*;
 import com.example.BookReview.data.model.AuthorDB;
 import com.example.BookReview.data.model.BookDB;
+import com.example.BookReview.data.model.BookRatingDB;
 import com.example.BookReview.data.repository.AuthorRepository;
+import com.example.BookReview.data.repository.BookRatingRepository;
 import com.example.BookReview.data.repository.BookRepository;
+import com.example.BookReview.helper.AppConstants;
 import com.example.BookReview.helper.BookGenre;
 import com.example.BookReview.helper.Language;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class BookServiceImplementation implements BookService {
+public class BookServiceImplementation extends CustomObserver implements BookService {
 
 
     @Qualifier("bookRepository")
@@ -29,6 +33,9 @@ public class BookServiceImplementation implements BookService {
     @Qualifier("authorRepository")
     @Autowired
     private AuthorRepository authorRepository;
+    @Qualifier("bookRatingRepository")
+    @Autowired
+    private BookRatingRepository bookRatingRepository;
 
 
     @Override
@@ -62,7 +69,7 @@ public class BookServiceImplementation implements BookService {
 
         List<AuthorDB> authors = new ArrayList<>();
 
-        for(Long authorID : createModel.getAuthorIds()){
+        for (Long authorID : createModel.getAuthorIds()) {
             Optional<AuthorDB> authorDB = authorRepository.findById(authorID);
             authorDB.ifPresent(authors::add);
         }
@@ -70,8 +77,8 @@ public class BookServiceImplementation implements BookService {
         BookDB bookDB = new BookDB(
                 createModel.getTitle(),
                 publicationDate,
-                0,
-                5.0,
+                AppConstants.defaultNumberOfInitialRatings,
+                AppConstants.defaultBookRating,
                 createModel.getGenre(),
                 createModel.getLanguage(),
                 createModel.getDescription(),
@@ -85,11 +92,11 @@ public class BookServiceImplementation implements BookService {
     @Override
     public Book update(Long id, BookCreateModel newValue) {
         Optional<BookDB> bookDB = bookRepository.findById(id);
-        if (bookDB.isEmpty()){
+        if (bookDB.isEmpty()) {
             return null;
         }
 
-        BookDB toUpdate= bookDB.get();
+        BookDB toUpdate = bookDB.get();
 
         LocalDate oldDate = toUpdate.getPublicationDate();
         int year = newValue.getYear() > 0 ? newValue.getYear() : oldDate.getYear();
@@ -98,23 +105,23 @@ public class BookServiceImplementation implements BookService {
         LocalDate newDate = LocalDate.of(year, month, day);
         toUpdate.setPublicationDate(newDate);
 
-        if(newValue.getTitle() != null){
+        if (newValue.getTitle() != null) {
             toUpdate.setTitle(newValue.getTitle());
         }
-        if(newValue.getGenre() != null){
+        if (newValue.getGenre() != null) {
             toUpdate.setGenre(newValue.getGenre());
         }
-        if(newValue.getLanguage() != null){
+        if (newValue.getLanguage() != null) {
             toUpdate.setLanguage(newValue.getLanguage());
         }
-        if(newValue.getDescription() != null){
+        if (newValue.getDescription() != null) {
             toUpdate.setDescription(newValue.getDescription());
         }
 
-        if(newValue.getAuthorIds() != null){
+        if (newValue.getAuthorIds() != null) {
             List<AuthorDB> authors = new ArrayList<>();
 
-            for(Long authorID : newValue.getAuthorIds()){
+            for (Long authorID : newValue.getAuthorIds()) {
                 Optional<AuthorDB> authorDB = authorRepository.findById(authorID);
                 authorDB.ifPresent(authors::add);
             }
@@ -129,7 +136,7 @@ public class BookServiceImplementation implements BookService {
     @Override
     public boolean deleteById(Long id) {
         Optional<BookDB> bookDB = bookRepository.findById(id);
-        if(bookDB.isEmpty()){
+        if (bookDB.isEmpty()) {
             return false;
         }
 
@@ -137,6 +144,34 @@ public class BookServiceImplementation implements BookService {
         return true;
     }
 
-    //TODO create method to update rating - observer
+
+    //observable pattern -> Observer
+    public void updateObserver(Long id) {
+        Optional<BookDB> bookDB = bookRepository.findById(id);
+        if (bookDB.isEmpty()) {
+            return;
+        }
+
+        BookDB book = bookDB.get();
+
+        List<BookRatingDB> bookRatingDBS = bookRatingRepository.findAllByBook_Id(id);
+        int totalNumber = bookRatingDBS.size();
+
+        if (totalNumber == 0) {
+            book.setMeanRating(AppConstants.defaultBookRating);
+            book.setTotalNumberOfRatings(AppConstants.defaultNumberOfInitialRatings);
+        } else {
+            double rating = 0;
+            for (BookRatingDB ratingDB : bookRatingDBS) {
+                rating += ratingDB.getRating();
+            }
+            rating /= totalNumber;
+
+            book.setMeanRating(rating);
+            book.setTotalNumberOfRatings(totalNumber);
+        }
+        bookRepository.save(book);
+    }
+
 }
 

@@ -28,6 +28,8 @@ public class AuthenticationController {
 
         return new ResponseEntity<>(authenticationToken, HttpStatus.OK);
     }
+
+    @GetMapping("/logout")
     public ResponseEntity logout(@RequestHeader("Token") String token) {
         boolean success = authenticationService.logout(token);
 

@@ -1,39 +1,40 @@
 package com.example.BookReview.business.service.implementation;
 
 import com.example.BookReview.business.model.base.BookRating;
-import com.example.BookReview.business.model.base.BookReview;
 import com.example.BookReview.business.model.create.BookRatingCreateModel;
-import com.example.BookReview.business.model.create.BookReviewCreateModel;
+import com.example.BookReview.business.model.observer.CustomObserver;
+import com.example.BookReview.business.model.observer.CustomSubject;
 import com.example.BookReview.business.service.interfaces.BookRatingService;
 import com.example.BookReview.data.model.BookDB;
 import com.example.BookReview.data.model.BookRatingDB;
-import com.example.BookReview.data.model.BookReviewDB;
 import com.example.BookReview.data.model.ReaderDB;
 import com.example.BookReview.data.repository.BookRatingRepository;
 import com.example.BookReview.data.repository.BookRepository;
-import com.example.BookReview.data.repository.BookReviewRepository;
 import com.example.BookReview.data.repository.ReaderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class BookRatingServiceImplementation implements BookRatingService {
+public class BookRatingServiceImplementation extends CustomSubject implements BookRatingService {
 
-    @Qualifier("bookRepository")
-    @Autowired
-    private BookRepository bookRepository;
-    @Qualifier("readerRepository")
-    @Autowired
-    private ReaderRepository readerRepository;
-    @Qualifier("bookRatingRepository")
-    @Autowired
-    private BookRatingRepository bookRatingRepository;
+    private final BookRepository bookRepository;
+    private final ReaderRepository readerRepository;
+    private final BookRatingRepository bookRatingRepository;
 
+
+    private List<CustomObserver> observers = new ArrayList<CustomObserver>();
+
+    public BookRatingServiceImplementation(BookRepository bookRepository, ReaderRepository readerRepository, BookRatingRepository bookRatingRepository, BookServiceImplementation bookServiceImplementation) {
+        this.bookRepository = bookRepository;
+        this.readerRepository = readerRepository;
+        this.bookRatingRepository = bookRatingRepository;
+
+        observers.add(bookServiceImplementation);
+    }
 
     @Override
     public List<BookRating> findAll() {
@@ -76,6 +77,8 @@ public class BookRatingServiceImplementation implements BookRatingService {
 
         BookRatingDB saved = bookRatingRepository.save(review);
 
+        notifyObservers(saved.getBook().getId());
+
         return new BookRating(saved);
     }
 
@@ -100,6 +103,8 @@ public class BookRatingServiceImplementation implements BookRatingService {
 
         BookRatingDB updated = bookRatingRepository.save(toUpdate);
 
+        notifyObservers(updated.getBook().getId());
+
         return new BookRating(updated);
     }
 
@@ -112,7 +117,24 @@ public class BookRatingServiceImplementation implements BookRatingService {
 
         BookRatingDB toDelete = bookRatingDB.get();
 
+        notifyObservers(toDelete.getBook().getId());
+
         bookRatingRepository.deleteById(id);
         return new BookRating(toDelete);
+    }
+
+    //observer pattern -> Subject
+    public void notifyObservers(Long id) {
+        for(CustomObserver observer : observers){
+            observer.updateObserver(id);
+        }
+    }
+
+    public void addObserver(CustomObserver observer) {
+        observers.add(observer);
+    }
+
+    public void deleteObserver(CustomObserver observer) {
+        observers.remove(observer);
     }
 }
