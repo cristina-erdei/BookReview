@@ -5,6 +5,7 @@ import com.example.BookReview.business.model.DTO.AuthorDTO;
 import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.Author;
 import com.example.BookReview.business.model.create.AuthorCreateModel;
+import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.implementation.AuthorServiceImplementation;
 import com.example.BookReview.business.service.interfaces.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class AuthorController {
 
     @Autowired
     private AuthorServiceImplementation authorService;
+    @Autowired
+    private AdministratorServiceImplementation administratorService;
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<AuthorDTO>> findAll() {
@@ -45,15 +49,26 @@ public class AuthorController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AuthorDTO> create(@RequestBody AuthorCreateModel createModel) {
+    public ResponseEntity<AuthorDTO> create(@RequestBody AuthorCreateModel createModel, @RequestHeader("Token") String token) {
+        Administrator user = administratorService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Author author = authorService.create(createModel);
 
         return new ResponseEntity<>(new AuthorDTO(author), HttpStatus.OK);
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<AuthorDTO> update(@PathVariable Long id, @RequestBody AuthorCreateModel newValue) {
+    public ResponseEntity<AuthorDTO> update(@PathVariable Long id, @RequestBody AuthorCreateModel newValue, @RequestHeader("Token") String token) {
+        Administrator user = administratorService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Author author = authorService.update(id, newValue);
+
 
         if (author == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -62,7 +77,12 @@ public class AuthorController {
     }
 
     @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<AuthorDTO> deleteById(@PathVariable Long id) {
+    public ResponseEntity<AuthorDTO> deleteById(@PathVariable Long id, @RequestHeader("Token") String token) {
+        Administrator user = administratorService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Author author = authorService.deleteById(id);
 
         if (author == null) {

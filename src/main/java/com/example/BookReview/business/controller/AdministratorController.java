@@ -75,7 +75,12 @@ public class AdministratorController {
 
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<AdministratorDTO> update(@PathVariable Long id, @RequestBody AdministratorCreateModel newValue) {
+    public ResponseEntity<AdministratorDTO> update(@PathVariable Long id, @RequestBody AdministratorCreateModel newValue,@RequestHeader("Token") String token) {
+        Administrator user = administratorService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Administrator administrator = administratorService.update(id, newValue);
 
         if (administrator == null) {
@@ -95,7 +100,12 @@ public class AdministratorController {
     }
 
     @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<AdministratorDTO> deleteById(@PathVariable Long id) {
+    public ResponseEntity<AdministratorDTO> deleteById(@PathVariable Long id, @RequestHeader("Token") String token) {
+        Administrator user = administratorService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Administrator administrator = administratorService.deleteById(id);
 
         if (administrator == null) {

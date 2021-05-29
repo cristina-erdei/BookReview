@@ -1,9 +1,11 @@
 package com.example.BookReview.business.controller;
 
 import com.example.BookReview.business.model.DTO.BookDTO;
+import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.Book;
 import com.example.BookReview.business.model.create.BookCreateModel;
 import com.example.BookReview.business.model.strategy.*;
+import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.implementation.BookServiceImplementation;
 import com.example.BookReview.helper.BookGenre;
 import com.example.BookReview.helper.Language;
@@ -23,6 +25,9 @@ public class BookController {
 
     @Autowired
     private BookServiceImplementation bookService;
+    @Autowired
+    private AdministratorServiceImplementation administratorService;
+
 
     BookSearching bookSearching = new BookSearching(new BookTitleSearchingStrategy());
 
@@ -67,14 +72,24 @@ public class BookController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BookDTO> create(@RequestBody BookCreateModel createModel) {
+    public ResponseEntity<BookDTO> create(@RequestBody BookCreateModel createModel, @RequestHeader("Token") String token) {
+        Administrator user = administratorService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Book book = bookService.create(createModel);
 
         return new ResponseEntity<>(new BookDTO(book), HttpStatus.OK);
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<BookDTO> update(@PathVariable Long id, @RequestBody BookCreateModel newValue) {
+    public ResponseEntity<BookDTO> update(@PathVariable Long id, @RequestBody BookCreateModel newValue, @RequestHeader("Token") String token) {
+        Administrator user = administratorService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Book book = bookService.update(id, newValue);
 
         if (book == null) {
@@ -84,7 +99,12 @@ public class BookController {
     }
 
     @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity deleteById(@PathVariable Long id) {
+    public ResponseEntity deleteById(@PathVariable Long id, @RequestHeader("Token") String token) {
+        Administrator user = administratorService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         boolean success = bookService.deleteById(id);
 
         if (!success) {

@@ -4,8 +4,10 @@ import com.example.BookReview.business.model.DTO.AdministratorDTO;
 import com.example.BookReview.business.model.DTO.BookSellerDTO;
 import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.BookSeller;
+import com.example.BookReview.business.model.base.Reader;
 import com.example.BookReview.business.model.create.AdministratorCreateModel;
 import com.example.BookReview.business.model.create.BookSellerCreateModel;
+import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.implementation.BookSellerServiceImplementation;
 import com.example.BookReview.business.service.interfaces.BookSellerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class BookSellerController {
 
     @Autowired
     private BookSellerServiceImplementation bookSellerService;
+    @Autowired
+    private AdministratorServiceImplementation administratorService;
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<BookSellerDTO>> findAll() {
@@ -78,7 +83,12 @@ public class BookSellerController {
 
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<BookSellerDTO> update(@PathVariable Long id, @RequestBody BookSellerCreateModel newValue) {
+    public ResponseEntity<BookSellerDTO> update(@PathVariable Long id, @RequestBody BookSellerCreateModel newValue, @RequestHeader("Token") String token) {
+        BookSeller user1 = bookSellerService.findByAuthenticationToken(token);
+        Administrator user2 = administratorService.findByAuthenticationToken(token);
+        if(user1 == null && user2 == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
         BookSeller bookSeller = bookSellerService.update(id, newValue);
 
         if (bookSeller == null) {
@@ -88,8 +98,8 @@ public class BookSellerController {
     }
 
     @PostMapping("/updateToken/{id}")
-    public ResponseEntity updateAuthenticationToken(@PathVariable Long id, @RequestBody String token) {
-        boolean success = bookSellerService.updateAuthenticationToken(id, token);
+    public ResponseEntity updateAuthenticationToken(@PathVariable Long id, @RequestBody String newToken) {
+        boolean success = bookSellerService.updateAuthenticationToken(id, newToken);
 
         if (!success) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -98,7 +108,12 @@ public class BookSellerController {
     }
 
     @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<BookSellerDTO> deleteById(@PathVariable Long id) {
+    public ResponseEntity<BookSellerDTO> deleteById(@PathVariable Long id, @RequestHeader("Token") String token) {
+        BookSeller user1 = bookSellerService.findByAuthenticationToken(token);
+        Administrator user2 = administratorService.findByAuthenticationToken(token);
+        if(user1 == null && user2 == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
         BookSeller bookSeller = bookSellerService.deleteById(id);
 
         if (bookSeller == null) {

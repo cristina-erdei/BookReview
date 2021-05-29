@@ -1,10 +1,13 @@
 package com.example.BookReview.business.controller;
 
 import com.example.BookReview.business.model.DTO.BookRatingDTO;
+import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.BookRating;
+import com.example.BookReview.business.model.base.Reader;
 import com.example.BookReview.business.model.create.BookRatingCreateModel;
 import com.example.BookReview.business.service.implementation.BookRatingServiceImplementation;
 
+import com.example.BookReview.business.service.implementation.ReaderServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,9 @@ public class BookRatingController {
 
     @Autowired
     private BookRatingServiceImplementation bookRatingService;
+    @Autowired
+    private ReaderServiceImplementation readerService;
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<BookRatingDTO>> findAll() {
@@ -62,14 +68,24 @@ public class BookRatingController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BookRatingDTO> create(@RequestBody BookRatingCreateModel createModel) {
+    public ResponseEntity<BookRatingDTO> create(@RequestBody BookRatingCreateModel createModel, @RequestHeader("Token") String token) {
+        Reader user = readerService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         BookRating bookRating = bookRatingService.create(createModel);
 
         return new ResponseEntity<>(new BookRatingDTO(bookRating), HttpStatus.OK);
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<BookRatingDTO> update(@PathVariable Long id, @RequestBody BookRatingCreateModel newValue) {
+    public ResponseEntity<BookRatingDTO> update(@PathVariable Long id, @RequestBody BookRatingCreateModel newValue, @RequestHeader("Token") String token) {
+        Reader user = readerService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         BookRating bookRating = bookRatingService.update(id, newValue);
 
         if (bookRating == null) {
@@ -79,7 +95,12 @@ public class BookRatingController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<BookRatingDTO> deleteById(@PathVariable Long id) {
+    public ResponseEntity<BookRatingDTO> deleteById(@PathVariable Long id, @RequestHeader("Token") String token) {
+        Reader user = readerService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         BookRating bookRating = bookRatingService.deleteById(id);
 
         if (bookRating == null) {

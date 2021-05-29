@@ -6,6 +6,7 @@ import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.Reader;
 import com.example.BookReview.business.model.create.AdministratorCreateModel;
 import com.example.BookReview.business.model.create.ReaderCreateModel;
+import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.implementation.ReaderServiceImplementation;
 import com.example.BookReview.business.service.interfaces.ReaderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class ReaderController {
 
     @Autowired
     private ReaderServiceImplementation readerService;
+    @Autowired
+    private AdministratorServiceImplementation administratorService;
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<ReaderDTO>> findAll() {
@@ -78,7 +82,13 @@ public class ReaderController {
 
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<ReaderDTO> update(@PathVariable Long id, @RequestBody ReaderCreateModel newValue) {
+    public ResponseEntity<ReaderDTO> update(@PathVariable Long id, @RequestBody ReaderCreateModel newValue, @RequestHeader("Token") String token) {
+        Reader user1 = readerService.findByAuthenticationToken(token);
+        Administrator user2 = administratorService.findByAuthenticationToken(token);
+        if(user1 == null && user2 == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Reader reader = readerService.update(id, newValue);
 
         if (reader == null) {
@@ -98,7 +108,13 @@ public class ReaderController {
     }
 
     @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<ReaderDTO> deleteById(@PathVariable Long id) {
+    public ResponseEntity<ReaderDTO> deleteById(@PathVariable Long id, @RequestHeader("Token") String token) {
+        Reader user1 = readerService.findByAuthenticationToken(token);
+        Administrator user2 = administratorService.findByAuthenticationToken(token);
+        if(user1 == null && user2 == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Reader reader = readerService.deleteById(id);
 
         if (reader == null) {

@@ -1,11 +1,15 @@
 package com.example.BookReview.business.controller;
 
 import com.example.BookReview.business.model.DTO.BookReviewDTO;
+import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.BookReview;
 import com.example.BookReview.business.model.base.BookReview;
+import com.example.BookReview.business.model.base.Reader;
 import com.example.BookReview.business.model.create.BookReviewCreateModel;
 import com.example.BookReview.business.model.create.BookReviewCreateModel;
+import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.implementation.BookReviewServiceImplementation;
+import com.example.BookReview.business.service.implementation.ReaderServiceImplementation;
 import com.example.BookReview.business.service.interfaces.BookReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +27,10 @@ public class BookReviewController {
 
     @Autowired
     private BookReviewServiceImplementation bookReviewService;
+    @Autowired
+    private ReaderServiceImplementation readerService;
+    @Autowired
+    private AdministratorServiceImplementation administratorService;
 
 
     @GetMapping("/getAll")
@@ -66,14 +74,24 @@ public class BookReviewController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BookReviewDTO> create(@RequestBody BookReviewCreateModel createModel) {
+    public ResponseEntity<BookReviewDTO> create(@RequestBody BookReviewCreateModel createModel, @RequestHeader("Token") String token) {
+        Reader user = readerService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         BookReview bookReview = bookReviewService.create(createModel);
 
         return new ResponseEntity<>(new BookReviewDTO(bookReview), HttpStatus.OK);
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<BookReviewDTO> update(@PathVariable Long id,@RequestBody BookReviewCreateModel newValue) {
+    public ResponseEntity<BookReviewDTO> update(@PathVariable Long id,@RequestBody BookReviewCreateModel newValue, @RequestHeader("Token") String token) {
+        Reader user = readerService.findByAuthenticationToken(token);
+        if(user == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         BookReview bookReview = bookReviewService.update(id, newValue);
 
         if (bookReview == null) {
@@ -83,7 +101,13 @@ public class BookReviewController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<BookReviewDTO> deleteById(@PathVariable Long id) {
+    public ResponseEntity<BookReviewDTO> deleteById(@PathVariable Long id, @RequestHeader("Token") String token) {
+        Reader user1 = readerService.findByAuthenticationToken(token);
+        Administrator user2 = administratorService.findByAuthenticationToken(token);
+        if(user1 == null && user2 == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         BookReview bookReview = bookReviewService.deleteById(id);
 
         if (bookReview == null) {
