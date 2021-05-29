@@ -4,5 +4,6 @@ public enum BookGenre {
     Romance,
     Thriller,
     SF,
-    NonFiction
+    NonFiction,
+    MagicalRealism,
 }

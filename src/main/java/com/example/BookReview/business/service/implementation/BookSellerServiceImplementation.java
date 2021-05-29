@@ -57,6 +57,11 @@ public class BookSellerServiceImplementation implements BookSellerService {
         Base64.Encoder encoder = Base64.getEncoder();
         String encodedPass = encoder.encodeToString(createModel.getPassword().getBytes(StandardCharsets.UTF_8));
 
+        BookSellerDB old = bookSellerRepository.findByEmail(createModel.getEmail());
+        if(old != null) {
+            return null;
+        }
+
         BookSellerDB bookSellerDB = new BookSellerDB(
                 encodedPass,
                 createModel.getEmail(),

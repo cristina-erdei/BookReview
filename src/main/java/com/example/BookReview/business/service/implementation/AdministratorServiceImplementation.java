@@ -56,6 +56,11 @@ public class AdministratorServiceImplementation implements AdministratorService 
         Base64.Encoder encoder = Base64.getEncoder();
         String encodedPass = encoder.encodeToString(createModel.getPassword().getBytes(StandardCharsets.UTF_8));
 
+        AdministratorDB old =administratorRepository.findByEmail(createModel.getEmail());
+        if(old != null){
+            return null;
+        }
+
         AdministratorDB administratorDB = new AdministratorDB(
                 encodedPass,
                 createModel.getEmail(),

@@ -106,15 +106,14 @@ public class BookReviewController {
         }
 
 
-        if(user1 != null && !user1.getId().equals(id)){
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-
-
         BookReview bookReview = bookReviewService.deleteById(id);
 
         if (bookReview == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        if(user1 != null && !user1.getId().equals(bookReview.getId())){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
         return new ResponseEntity<>(new BookReviewDTO(bookReview), HttpStatus.OK);
     }

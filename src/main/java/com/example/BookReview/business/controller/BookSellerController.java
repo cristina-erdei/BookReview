@@ -73,6 +73,9 @@ public class BookSellerController {
     public ResponseEntity<BookSellerDTO> create(@RequestBody BookSellerCreateModel createModel) {
         BookSeller bookSeller = bookSellerService.create(createModel);
 
+        if(bookSeller == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(new BookSellerDTO(bookSeller), HttpStatus.OK);
     }
 

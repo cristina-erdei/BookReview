@@ -57,6 +57,10 @@ public class ReaderServiceImplementation implements ReaderService {
         Base64.Encoder encoder = Base64.getEncoder();
         String encodedPass = encoder.encodeToString(createModel.getPassword().getBytes(StandardCharsets.UTF_8));
 
+        ReaderDB old = readerRepository.findByEmail(createModel.getEmail());
+        if(old != null) { //cannot have 2 users with same email
+            return null;
+        }
         ReaderDB readerDB = new ReaderDB(
                 encodedPass,
                 createModel.getEmail(),

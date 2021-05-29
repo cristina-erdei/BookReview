@@ -73,6 +73,10 @@ public class ReaderController {
     public ResponseEntity<ReaderDTO> create(@RequestBody ReaderCreateModel createModel) {
         Reader reader = readerService.create(createModel);
 
+        if(reader == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(new ReaderDTO(reader), HttpStatus.OK);
     }
 

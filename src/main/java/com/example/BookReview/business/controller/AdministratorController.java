@@ -68,6 +68,9 @@ public class AdministratorController {
     public ResponseEntity<AdministratorDTO> create(@RequestBody AdministratorCreateModel createModel) {
         Administrator administrator = administratorService.create(createModel);
 
+        if(administrator == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(new AdministratorDTO(administrator), HttpStatus.OK);
     }
 

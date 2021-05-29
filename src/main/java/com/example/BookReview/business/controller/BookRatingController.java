@@ -74,6 +74,10 @@ public class BookRatingController {
 
         BookRating bookRating = bookRatingService.create(createModel);
 
+        if(bookRating == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(new BookRatingDTO(bookRating), HttpStatus.OK);
     }
 
@@ -99,15 +103,15 @@ public class BookRatingController {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
 
-        if(!user.getId().equals(id)){
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        }
-
 
         BookRating bookRating = bookRatingService.deleteById(id);
 
         if (bookRating == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        if(!user.getId().equals(bookRating.getId())){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
         return new ResponseEntity<>(new BookRatingDTO(bookRating), HttpStatus.OK);
     }
