@@ -3,7 +3,6 @@ package com.example.BookReview.business.service.implementation;
 import com.example.BookReview.business.model.base.BookSeller;
 import com.example.BookReview.business.model.create.BookSellerCreateModel;
 import com.example.BookReview.business.service.interfaces.BookSellerService;
-import com.example.BookReview.data.model.AdministratorDB;
 import com.example.BookReview.data.model.BookSellerDB;
 import com.example.BookReview.data.repository.BookSellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;

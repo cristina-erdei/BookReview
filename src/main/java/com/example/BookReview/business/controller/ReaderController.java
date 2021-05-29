@@ -1,16 +1,12 @@
 package com.example.BookReview.business.controller;
 
-import com.example.BookReview.business.model.DTO.AdministratorDTO;
 import com.example.BookReview.business.model.DTO.ReaderDTO;
 import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.Reader;
-import com.example.BookReview.business.model.create.AdministratorCreateModel;
 import com.example.BookReview.business.model.create.ReaderCreateModel;
 import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.implementation.ReaderServiceImplementation;
-import com.example.BookReview.business.service.interfaces.ReaderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,6 +85,10 @@ public class ReaderController {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
 
+        if(user1 != null && !user1.getId().equals(id)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         Reader reader = readerService.update(id, newValue);
 
         if (reader == null) {
@@ -112,6 +112,10 @@ public class ReaderController {
         Reader user1 = readerService.findByAuthenticationToken(token);
         Administrator user2 = administratorService.findByAuthenticationToken(token);
         if(user1 == null && user2 == null){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+        if(user1 != null && !user1.getId().equals(id)){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
 

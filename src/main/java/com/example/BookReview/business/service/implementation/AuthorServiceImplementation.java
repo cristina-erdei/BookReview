@@ -1,11 +1,11 @@
 package com.example.BookReview.business.service.implementation;
 
 import com.example.BookReview.business.model.base.Author;
-import com.example.BookReview.business.model.base.Author;
 import com.example.BookReview.business.model.create.AuthorCreateModel;
 import com.example.BookReview.business.service.interfaces.AuthorService;
 import com.example.BookReview.data.model.AuthorDB;
 import com.example.BookReview.data.repository.AuthorRepository;
+import com.example.BookReview.helper.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,9 @@ public class AuthorServiceImplementation implements AuthorService {
     public Author create(AuthorCreateModel createModel) {
         LocalDate dateOfBirth;
 
-        if (createModel.getBirthYear() == 0) {
+        if (createModel.getBirthYear() < AppConstants.minimumDateYear ||
+                createModel.getBirthMonth() < AppConstants.minimumDateMonth || createModel.getBirthMonth() > AppConstants.maximumDateMonth ||
+                createModel.getBirthDay() < AppConstants.minimumDateDay || createModel.getBirthDay() > AppConstants.maximumDateDay) {
             return null;
         }
 
@@ -51,14 +53,19 @@ public class AuthorServiceImplementation implements AuthorService {
 
         LocalDate dateOfDeath;
 
-        if (createModel.getDeathYear() == 0) {
+        if (createModel.getDeathYear() == AppConstants.defaultYear) {
             dateOfDeath = null;
-        } else {
+        } else if(createModel.getDeathYear() >= AppConstants.minimumDateYear ||
+                createModel.getDeathMonth() >= AppConstants.minimumDateMonth || createModel.getDeathMonth() <= AppConstants.maximumDateMonth ||
+                createModel.getDeathDay() >= AppConstants.minimumDateDay || createModel.getDeathDay() <= AppConstants.maximumDateDay)
+            {
             dateOfDeath = LocalDate.of(
                     createModel.getDeathYear(),
                     createModel.getDeathMonth(),
                     createModel.getDeathDay()
             );
+        } else {
+            dateOfDeath = null;
         }
 
         AuthorDB authorDB = new AuthorDB(
@@ -82,9 +89,9 @@ public class AuthorServiceImplementation implements AuthorService {
         AuthorDB toUpdate = authorDB.get();
 
         LocalDate oldBirthDate = toUpdate.getDateOfBirth();
-        int year = newValue.getBirthYear() > 0 ? newValue.getBirthYear() : oldBirthDate.getYear();
-        int month = newValue.getBirthMonth() > 0 ? newValue.getBirthMonth() : oldBirthDate.getMonthValue();
-        int day = newValue.getBirthDay() > 0 ? newValue.getBirthDay() : oldBirthDate.getDayOfMonth();
+        int year = newValue.getBirthYear() > AppConstants.defaultYear ? newValue.getBirthYear() : oldBirthDate.getYear();
+        int month = newValue.getBirthMonth() > AppConstants.defaultMonth ? newValue.getBirthMonth() : oldBirthDate.getMonthValue();
+        int day = newValue.getBirthDay() > AppConstants.defaultDay ? newValue.getBirthDay() : oldBirthDate.getDayOfMonth();
         LocalDate newBirthDate = LocalDate.of(year, month, day);
         toUpdate.setDateOfBirth(newBirthDate);
 
@@ -92,17 +99,20 @@ public class AuthorServiceImplementation implements AuthorService {
         LocalDate oldDeathDate = toUpdate.getDateOfDeath();
         LocalDate newDeathDate;
         if (oldDeathDate == null) {
-            if (newValue.getDeathYear() == 0) {
+            if (newValue.getDeathYear() == AppConstants.defaultYear) {
                 newDeathDate = null;
-            } else if (newValue.getDeathDay() == 0 || newValue.getDeathMonth() == 0) {
+            } else if (
+                    newValue.getDeathMonth() < AppConstants.minimumDateMonth || newValue.getDeathMonth() > AppConstants.maximumDateMonth ||
+                    newValue.getDeathDay() < AppConstants.minimumDateDay || newValue.getDeathDay() > AppConstants.maximumDateDay
+            ) {
                 return null;
             } else {
                 newDeathDate = LocalDate.of(newValue.getDeathYear(), newValue.getDeathMonth(), newValue.getDeathDay());
             }
         } else {
-            year = newValue.getDeathYear() > 0 ? newValue.getDeathYear() : oldDeathDate.getYear();
-            month = newValue.getDeathMonth() > 0 ? newValue.getDeathMonth() : oldDeathDate.getMonthValue();
-            day = newValue.getDeathDay() > 0 ? newValue.getDeathDay() : oldDeathDate.getDayOfMonth();
+            year = newValue.getDeathYear() > AppConstants.defaultYear ? newValue.getDeathYear() : oldDeathDate.getYear();
+            month = newValue.getDeathMonth() > AppConstants.defaultMonth ? newValue.getDeathMonth() : oldDeathDate.getMonthValue();
+            day = newValue.getDeathDay() > AppConstants.defaultDay ? newValue.getDeathDay() : oldDeathDate.getDayOfMonth();
             newDeathDate = LocalDate.of(year, month, day);
         }
         toUpdate.setDateOfDeath(newDeathDate);

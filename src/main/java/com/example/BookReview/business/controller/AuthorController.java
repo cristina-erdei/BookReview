@@ -1,15 +1,12 @@
 package com.example.BookReview.business.controller;
 
-import com.example.BookReview.business.model.DTO.AdministratorDTO;
 import com.example.BookReview.business.model.DTO.AuthorDTO;
 import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.Author;
 import com.example.BookReview.business.model.create.AuthorCreateModel;
 import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.implementation.AuthorServiceImplementation;
-import com.example.BookReview.business.service.interfaces.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

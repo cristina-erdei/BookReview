@@ -19,7 +19,6 @@ public class Book {
     private Language language;
     private String description;
 
-    //TODO modify to author
     private List<Author> authors;
 
 

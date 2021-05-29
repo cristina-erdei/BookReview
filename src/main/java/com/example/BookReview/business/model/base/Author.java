@@ -9,7 +9,7 @@ public class Author {
 
     private String fullName;
     private LocalDate dateOfBirth;
-    private LocalDate dateOfDeath; //TODO: figure out default value if not dead yet and how to handle it???
+    private LocalDate dateOfDeath;
 
     public Author() {
     }

@@ -1,4 +1,4 @@
-package com.example.BookReview.business.model.strategy;
+package com.example.BookReview.helper;
 
 public enum SearchingStrategyEnum {
     BookTitle,

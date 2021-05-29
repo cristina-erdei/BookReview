@@ -16,7 +16,6 @@ import java.util.Base64;
 @Service
 public class AuthenticationServiceImplementation implements AuthenticationService {
 
-
     @Autowired
     private AdministratorServiceImplementation administratorService;
     @Autowired
@@ -33,7 +32,6 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
 
         //check if admin
-
         Administrator administrator = administratorService.findByEmail(loginRequestModel.getEmail());
 
         if(administrator != null){
@@ -49,7 +47,6 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
         }
 
         //check if reader
-
         Reader reader = readerService.findByEmail(loginRequestModel.getEmail());
 
         if(reader != null){
@@ -66,7 +63,6 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
 
 
         //check if seller
-
         BookSeller bookSeller = bookSellerService.findByEmail(loginRequestModel.getEmail());
 
         if(bookSeller != null){

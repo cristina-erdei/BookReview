@@ -1,12 +1,10 @@
 package com.example.BookReview.business.controller;
 
 import com.example.BookReview.business.model.DTO.BookRatingDTO;
-import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.BookRating;
 import com.example.BookReview.business.model.base.Reader;
 import com.example.BookReview.business.model.create.BookRatingCreateModel;
 import com.example.BookReview.business.service.implementation.BookRatingServiceImplementation;
-
 import com.example.BookReview.business.service.implementation.ReaderServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,7 +68,7 @@ public class BookRatingController {
     @PostMapping("/create")
     public ResponseEntity<BookRatingDTO> create(@RequestBody BookRatingCreateModel createModel, @RequestHeader("Token") String token) {
         Reader user = readerService.findByAuthenticationToken(token);
-        if(user == null){
+        if(user == null || !user.getId().equals(createModel.getReaderId())){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
 
@@ -100,6 +98,11 @@ public class BookRatingController {
         if(user == null){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
+        if(!user.getId().equals(id)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
 
         BookRating bookRating = bookRatingService.deleteById(id);
 

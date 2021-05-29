@@ -5,7 +5,6 @@ import com.example.BookReview.business.model.base.Book;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class AuthorNameSearchingStrategy implements SearchingStrategyAbstract {
     @Override

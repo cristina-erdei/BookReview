@@ -5,7 +5,6 @@ import com.example.BookReview.business.model.create.AdministratorCreateModel;
 import com.example.BookReview.business.service.interfaces.AdministratorService;
 import com.example.BookReview.data.model.AdministratorDB;
 import com.example.BookReview.data.repository.AdministratorRepository;
-import com.fasterxml.jackson.annotation.OptBoolean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

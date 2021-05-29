@@ -1,7 +1,6 @@
 package com.example.BookReview.business.service.implementation;
 
 import com.example.BookReview.business.model.base.BookReview;
-import com.example.BookReview.business.model.base.BookReview;
 import com.example.BookReview.business.model.create.BookReviewCreateModel;
 import com.example.BookReview.business.service.interfaces.BookReviewService;
 import com.example.BookReview.data.model.BookDB;

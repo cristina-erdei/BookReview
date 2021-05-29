@@ -3,16 +3,12 @@ package com.example.BookReview.business.controller;
 import com.example.BookReview.business.model.DTO.BookReviewDTO;
 import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.BookReview;
-import com.example.BookReview.business.model.base.BookReview;
 import com.example.BookReview.business.model.base.Reader;
-import com.example.BookReview.business.model.create.BookReviewCreateModel;
 import com.example.BookReview.business.model.create.BookReviewCreateModel;
 import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.implementation.BookReviewServiceImplementation;
 import com.example.BookReview.business.service.implementation.ReaderServiceImplementation;
-import com.example.BookReview.business.service.interfaces.BookReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,9 +72,10 @@ public class BookReviewController {
     @PostMapping("/create")
     public ResponseEntity<BookReviewDTO> create(@RequestBody BookReviewCreateModel createModel, @RequestHeader("Token") String token) {
         Reader user = readerService.findByAuthenticationToken(token);
-        if(user == null){
+        if(user == null || !user.getId().equals(createModel.getReaderId())){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
 
         BookReview bookReview = bookReviewService.create(createModel);
 
@@ -107,6 +104,12 @@ public class BookReviewController {
         if(user1 == null && user2 == null){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
+
+        if(user1 != null && !user1.getId().equals(id)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
 
         BookReview bookReview = bookReviewService.deleteById(id);
 

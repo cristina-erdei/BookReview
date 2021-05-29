@@ -1,17 +1,12 @@
 package com.example.BookReview.business.controller;
 
-import com.example.BookReview.business.model.DTO.AdministratorDTO;
 import com.example.BookReview.business.model.DTO.BookSellerDTO;
 import com.example.BookReview.business.model.base.Administrator;
 import com.example.BookReview.business.model.base.BookSeller;
-import com.example.BookReview.business.model.base.Reader;
-import com.example.BookReview.business.model.create.AdministratorCreateModel;
 import com.example.BookReview.business.model.create.BookSellerCreateModel;
 import com.example.BookReview.business.service.implementation.AdministratorServiceImplementation;
 import com.example.BookReview.business.service.implementation.BookSellerServiceImplementation;
-import com.example.BookReview.business.service.interfaces.BookSellerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,6 +84,12 @@ public class BookSellerController {
         if(user1 == null && user2 == null){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
+        if(user1 != null && !user1.getId().equals(id)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
+
         BookSeller bookSeller = bookSellerService.update(id, newValue);
 
         if (bookSeller == null) {
@@ -114,6 +115,11 @@ public class BookSellerController {
         if(user1 == null && user2 == null){
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
+
+        if(user1 != null && !user1.getId().equals(id)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+
         BookSeller bookSeller = bookSellerService.deleteById(id);
 
         if (bookSeller == null) {

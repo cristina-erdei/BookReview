@@ -11,4 +11,6 @@ public interface BookRatingRepository extends JpaRepository<BookRatingDB, Long> 
     List<BookRatingDB> findAllByBook_Id(Long book_id);
 
     List<BookRatingDB> findAllByReader_Id(Long reader_id);
+
+    BookRatingDB findByReader_IdAndBook_Id(Long reader_id, Long book_id);
 }

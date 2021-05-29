@@ -12,6 +12,7 @@ public class BookCreateModel {
     private int year;
     private int month;
     private int day;
+
     private BookGenre genre;
     private Language language;
     private String description;

@@ -11,6 +11,7 @@ import com.example.BookReview.data.model.ReaderDB;
 import com.example.BookReview.data.repository.BookRatingRepository;
 import com.example.BookReview.data.repository.BookRepository;
 import com.example.BookReview.data.repository.ReaderRepository;
+import com.example.BookReview.helper.AppConstants;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class BookRatingServiceImplementation extends CustomSubject implements Bo
     private final BookRatingRepository bookRatingRepository;
 
 
-    private List<CustomObserver> observers = new ArrayList<CustomObserver>();
+    private List<CustomObserver> observers = new ArrayList<>();
 
     public BookRatingServiceImplementation(BookRepository bookRepository, ReaderRepository readerRepository, BookRatingRepository bookRatingRepository, BookServiceImplementation bookServiceImplementation) {
         this.bookRepository = bookRepository;
@@ -69,13 +70,18 @@ public class BookRatingServiceImplementation extends CustomSubject implements Bo
             return null;
         }
 
-        BookRatingDB review = new BookRatingDB(
+        BookRatingDB oldRating = bookRatingRepository.findByReader_IdAndBook_Id(createModel.getReaderId(), createModel.getBookId());
+        if(oldRating != null){ //cannot create more than 1 rating on the same book
+            return null;
+        }
+
+        BookRatingDB rating = new BookRatingDB(
                 createModel.getRating(),
                 book.get(),
                 reader.get()
         );
 
-        BookRatingDB saved = bookRatingRepository.save(review);
+        BookRatingDB saved = bookRatingRepository.save(rating);
 
         notifyObservers(saved.getBook().getId());
 
@@ -97,7 +103,7 @@ public class BookRatingServiceImplementation extends CustomSubject implements Bo
         Optional<ReaderDB> reader = readerRepository.findById(newValue.getReaderId());
         reader.ifPresent(toUpdate::setReader);
 
-        if(newValue.getRating() > 0){
+        if(newValue.getRating() >= AppConstants.minimumBookRating){
             toUpdate.setRating(newValue.getRating());
         }
 

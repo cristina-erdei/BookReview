@@ -61,6 +61,12 @@ public class BookServiceImplementation extends CustomObserver implements BookSer
 
     @Override
     public Book create(BookCreateModel createModel) {
+        if (createModel.getYear() < AppConstants.minimumDateYear ||
+                createModel.getMonth() < AppConstants.minimumDateMonth || createModel.getMonth() > AppConstants.maximumDateMonth ||
+                createModel.getDay() < AppConstants.minimumDateDay || createModel.getDay() > AppConstants.maximumDateDay) {
+            return null;
+        }
+
         LocalDate publicationDate = LocalDate.of(
                 createModel.getYear(),
                 createModel.getMonth(),
@@ -99,9 +105,9 @@ public class BookServiceImplementation extends CustomObserver implements BookSer
         BookDB toUpdate = bookDB.get();
 
         LocalDate oldDate = toUpdate.getPublicationDate();
-        int year = newValue.getYear() > 0 ? newValue.getYear() : oldDate.getYear();
-        int month = newValue.getMonth() > 0 ? newValue.getMonth() : oldDate.getMonthValue();
-        int day = newValue.getDay() > 0 ? newValue.getDay() : oldDate.getDayOfMonth();
+        int year = newValue.getYear() > AppConstants.defaultYear ? newValue.getYear() : oldDate.getYear();
+        int month = newValue.getMonth() > AppConstants.defaultMonth ? newValue.getMonth() : oldDate.getMonthValue();
+        int day = newValue.getDay() > AppConstants.defaultDay ? newValue.getDay() : oldDate.getDayOfMonth();
         LocalDate newDate = LocalDate.of(year, month, day);
         toUpdate.setPublicationDate(newDate);
 
