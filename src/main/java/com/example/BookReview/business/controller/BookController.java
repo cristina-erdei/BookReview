@@ -27,9 +27,6 @@ public class BookController {
     @Autowired
     private AdministratorServiceImplementation administratorService;
 
-
-    BookSearching bookSearching = new BookSearching(new BookTitleSearchingStrategy());
-
     @GetMapping("/getAll")
     public ResponseEntity<List<BookDTO>> findAll() {
         List<Book> books = bookService.findAll();
@@ -114,31 +111,9 @@ public class BookController {
 
     @GetMapping("/search")
     public ResponseEntity<List<BookDTO>> search(@RequestBody SearchRequestModel model){
-        switch (model.getStrategy()) {
-            case BookTitle:
-                bookSearching.setStrategy(new BookTitleSearchingStrategy());
-                break;
-            case AuthorID:
-                bookSearching.setStrategy(new AuthorIDSearchingStrategy());
-                break;
-            case AuthorName:
-                bookSearching.setStrategy(new AuthorNameSearchingStrategy());
-                break;
-
-            default:
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-
-        List<Book> books;
-        if(bookService.findAll() == null) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        try{
-            books = bookSearching.findBooks(bookService.findAll(), model.getData());
-        } catch (NumberFormatException e){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        List<Book> books = bookService.search(model);
+        if(books == null) {
+            return  new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>(books.stream().map(BookDTO::new).collect(Collectors.toList()), HttpStatus.OK);

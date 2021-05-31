@@ -1,8 +1,10 @@
 package com.example.BookReview.business.service.implementation;
 
+import com.example.BookReview.business.model.DTO.BookDTO;
 import com.example.BookReview.business.model.base.*;
 import com.example.BookReview.business.model.create.*;
 import com.example.BookReview.business.model.observer.CustomObserver;
+import com.example.BookReview.business.model.strategy.*;
 import com.example.BookReview.business.service.interfaces.*;
 import com.example.BookReview.data.model.AuthorDB;
 import com.example.BookReview.data.model.BookDB;
@@ -15,6 +17,8 @@ import com.example.BookReview.helper.BookGenre;
 import com.example.BookReview.helper.Language;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -36,6 +40,8 @@ public class BookServiceImplementation extends CustomObserver implements BookSer
     @Qualifier("bookRatingRepository")
     @Autowired
     private BookRatingRepository bookRatingRepository;
+
+    private BookSearching bookSearching = new BookSearching(new BookTitleSearchingStrategy());
 
 
     @Override
@@ -148,6 +154,38 @@ public class BookServiceImplementation extends CustomObserver implements BookSer
 
         bookRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public List<Book> search(SearchRequestModel model) {
+        switch (model.getStrategy()) {
+            case BookTitle:
+                bookSearching.setStrategy(new BookTitleSearchingStrategy());
+                break;
+            case AuthorID:
+                bookSearching.setStrategy(new AuthorIDSearchingStrategy());
+                break;
+            case AuthorName:
+                bookSearching.setStrategy(new AuthorNameSearchingStrategy());
+                break;
+
+            default:
+                return null;
+        }
+
+        List<Book> books = findAll();
+        List<Book> searchResult;
+        if (books == null) {
+            return null;
+        }
+        try {
+            searchResult = bookSearching.findBooks(books, model.getData());
+        } catch (Exception e) {
+            return null;
+        }
+
+        return searchResult;
+
     }
 
 

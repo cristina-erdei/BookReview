@@ -2,6 +2,7 @@ package com.example.BookReview.business.service.interfaces;
 
 import com.example.BookReview.business.model.base.*;
 import com.example.BookReview.business.model.create.*;
+import com.example.BookReview.business.model.strategy.SearchRequestModel;
 import com.example.BookReview.helper.BookGenre;
 import com.example.BookReview.helper.Language;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public interface BookService {
     Book update(Long id, BookCreateModel newValue);
 
     boolean deleteById(Long id);
+
+    List<Book> search(SearchRequestModel model);
 
 }
 
